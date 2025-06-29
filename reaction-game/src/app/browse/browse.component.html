@@ -1,0 +1,32 @@
+<StackLayout class="light-container">
+  <!-- Ylempi pallo -->
+  <StackLayout [class]="redLight ? 'light red' : 'light white'"></StackLayout>
+
+  <!-- Alempi pallo -->
+  <StackLayout
+    [class]="greenLight ? 'light green' : 'light gray'"
+  ></StackLayout>
+
+  <!-- Nappi -->
+  <Button
+    text="Start"
+    (tap)="startSequence()"
+    [isEnabled]="!isRunning"
+    class="start-button"
+    width="200"
+  ></Button>
+
+  <StackLayout
+    (tap)="handleClick()"
+    [visibility]="showClickText && greenLight ? 'visible' : 'hidden'"
+    class="click-area"
+  >
+    <Label text="Click here" class="click-text"></Label>
+  </StackLayout>
+
+  <Label
+    [text]="reactionTimeMs + 'ms'"
+    [visibility]="!showClickText ? 'visible' : 'hidden'"
+    class="click-text"
+  ></Label>
+</StackLayout>

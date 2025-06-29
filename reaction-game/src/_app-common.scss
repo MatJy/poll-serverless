@@ -1,0 +1,135 @@
+@import "@nativescript/theme/core";
+@import "@nativescript/theme/default";
+
+// Place any CSS rules you want to apply on both iOS and Android here.
+// This is where the vast majority of your CSS code goes.
+.light-container {
+  vertical-align: center;
+  horizontal-align: center;
+  margin-top: 40;
+  spacing: 30;
+}
+
+.light {
+  width: 100;
+  height: 100;
+  border-radius: 50;
+  border-width: 2;
+  border-color: #999;
+}
+
+.red {
+  background-color: red;
+}
+
+.green {
+  background-color: green;
+}
+
+.white {
+  background-color: white;
+}
+
+.gray {
+  background-color: #ccc;
+}
+
+.start-button {
+  background-color: #007aff;
+  color: white;
+  padding: 12;
+  font-size: 18;
+  border-radius: 12;
+  margin-top: 30;
+}
+
+/* Klikattava alue */
+.click-area {
+  width: 100%; /* täysi leveys */
+  height: 200; /* tee alue korkeammaksi */
+  margin-top: 30;
+  border-radius: 12;
+}
+
+.click-text {
+  font-size: 20;
+  text-align: center;
+}
+
+.personal-best {
+  background-color: #4ade80;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 10;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.delete {
+  background-color: red;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.personal-best-text {
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Time Item */
+.time-item {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.time-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+}
+
+// Font icon class
+.fab {
+  font-family: "Font Awesome 5 Brands", "fa-brands-400";
+  font-weight: 400;
+}
+
+.fas {
+  font-family: "Font Awesome 5 Free", "fa-solid-900";
+  font-weight: 900;
+}
+
+.far {
+  font-family: "Font Awesome 5 Free", "fa-regular-400";
+  font-weight: 400;
+}
+
+// Custom tabstrip item class
+.navigation__item {
+  &:active,
+  &:active Label {
+    @include colorize($contrasted-color: complementary background 20% 0%);
+  }
+}
+
+// Common page class
+.page__content {
+  &-icon,
+  &-placeholder {
+    color: const(grey);
+    font-size: 20;
+    vertical-align: center;
+    horizontal-align: center;
+  }
+
+  &-icon {
+    font-size: 72;
+    vertical-align: top;
+    margin-top: 20%;
+  }
+}

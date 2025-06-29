@@ -1,0 +1,24 @@
+<ActionBar>
+  <Label text="Reaction Times"></Label>
+</ActionBar>
+
+<StackLayout padding="24" spacing="16">
+  <!-- Personal best -->
+  <StackLayout *ngIf="times.length > 0" class="personal-best">
+    <Label
+      [text]="'🏆 Personal Best: ' + times[0].time + ' ms'"
+      class="personal-best-text"
+    ></Label>
+  </StackLayout>
+
+  <Button (tap)="deleteTimes()" text="Delete all times" class="delete"></Button>
+
+  <!-- Aikalista -->
+  <ListView [items]="times">
+    <ng-template let-item="item">
+      <StackLayout class="time-item">
+        <Label [text]="item.time + ' ms'" class="time-text"></Label>
+      </StackLayout>
+    </ng-template>
+  </ListView>
+</StackLayout>
