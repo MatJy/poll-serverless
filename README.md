@@ -41,7 +41,7 @@ This project is a serverless poll (survey) application built using AWS Lambda an
    The response will include a token you will use in the `Authorization` header.
 
 5. **Use the token to access protected endpoints**  
-   For POST or PUT requests to create polls or vote, include the header:
+   For POST or PUT requests to create polls or vote, you must use the token.
 
 6. **Available API endpoints:**
 
