@@ -1,0 +1,128 @@
+service: poll-serverless
+frameworkVersion: '4'
+
+provider:
+    name: aws
+    runtime: nodejs20.x
+    region: eu-north-1
+    environment: # ympäristömuuttujat
+        user_pool_id: { Ref: UserPool } # cogniton user pool
+        client_id: { Ref: UserClient } # cogniton client id
+        ddb_table: ${self:service}-pollTable-${sls:stage}
+    iam:
+        role:
+            statements:
+                - Effect: Allow
+                  Action: # lambda-funktioille oikeudet käyttää cognitoa
+                      - cognito-idp:AdminInitiateAuth
+                      - cognito-idp:AdminCreateUser
+                      - cognito-idp:AdminSetUserPassword
+                      - dynamodb:*
+
+                  Resource: '*'
+    httpApi:
+        cors: true
+        authorizers:
+            PrivateAuthorizer: # Cogniton authorizerin nimi
+                type: jwt
+                identitySource: $request.header.Authorization
+                issuerUrl:
+                    Fn::Join:
+                        - ''
+                        - - 'https://cognito-idp.'
+                          - '${opt:region, self:provider.region}'
+                          - '.amazonaws.com/'
+                          - Ref: UserPool
+                audience:
+                    - Ref: UserClient
+
+functions:
+    loginUser: # sisäänkirjautuminen
+        handler: user/login.handler
+        events:
+            - httpApi:
+                  path: /user/login
+                  method: post
+
+    signupUser: # rekisteröityminen eli tunnareiden luonti
+        handler: user/signup.handler
+        events:
+            - httpApi:
+                  path: /user/signup
+                  method: post
+
+    privateAPI: # suojattu funktio ja reitti
+        handler: user/private.handler
+        events:
+            - httpApi:
+                  path: /user/private
+                  method: post
+                  authorizer: PrivateAuthorizer # suojaus
+
+    addPoll: # kyselyn lisääminen
+        handler: poll/addpoll.handler
+        events:
+            - httpApi:
+                  path: /polls/add
+                  method: post
+                  authorizer: PrivateAuthorizer
+
+    getPolls: # hakee kaikki kyselyt
+        handler: poll/getpolls.handler
+        events:
+            - httpApi:
+                  path: /polls/get
+                  method: get
+
+    getResults:
+        handler: poll/getresults.handler
+        events:
+            - httpApi:
+                  path: /polls/{id}/results
+                  method: get
+
+    addVote:
+        handler: poll/addvote.handler
+        events:
+            - httpApi:
+                  path: /polls/{id}/vote
+                  method: put
+                  authorizer: PrivateAuthorizer
+
+resources: # resurssit eli palvelut oletuspalveluiden lisäksi
+    Resources:
+        UserPool: # cognito userpool
+            Type: AWS::Cognito::UserPool
+            Properties:
+                UserPoolName: serverless-auth-pool
+                Schema: # käyttäjän tietojen skeema cognitossa. Tässä pelkkä email
+                    - Name: email
+                      Required: true
+                      Mutable: true
+                Policies:
+                    PasswordPolicy: # salasanan ominaisuudet
+                        MinimumLength: 6
+                AutoVerifiedAttributes: ['email'] # email validoidaan
+
+        UserClient: # cognito userpoolin client
+            Type: AWS::Cognito::UserPoolClient
+            Properties:
+                ClientName: user-pool-ui
+                GenerateSecret: false
+                UserPoolId: { Ref: UserPool }
+                AccessTokenValidity: 5 # token validi 5 tuntia
+                IdTokenValidity: 5
+                ExplicitAuthFlows:
+                    - 'ADMIN_NO_SRP_AUTH' # tavallinen authorisaatio emaililla ja salasanalla
+
+        pollTable:
+            Type: AWS::DynamoDB::Table
+            Properties:
+                TableName: ${self:service}-pollTable-${sls:stage}
+                AttributeDefinitions:
+                    - AttributeName: pollid
+                      AttributeType: N
+                KeySchema:
+                    - AttributeName: pollid
+                      KeyType: HASH
+                BillingMode: PAY_PER_REQUEST
