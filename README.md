@@ -29,14 +29,21 @@ This project is a serverless poll (survey) application built using AWS Lambda an
 2. **Register a new user**  
    Send a POST request to `/user/signup` with required user details.
 
-3. **Log in to obtain authorization token**  
+   ```json
+   {
+     "email": "example@gmail.com",
+     "password": "example123"
+   }
+   ```
+
+4. **Log in to obtain authorization token**  
    Send a POST request to `/user/login` with credentials.  
    The response will include a token you will use in the `Authorization` header.
 
-4. **Use the token to access protected endpoints**  
+5. **Use the token to access protected endpoints**  
    For POST or PUT requests to create polls or vote, include the header:
 
-5. **Available API endpoints:**
+6. **Available API endpoints:**
 
 | Method | Path                  | Description                       | Authorization required? |
 |--------|-----------------------|---------------------------------|------------------------|
@@ -47,6 +54,27 @@ This project is a serverless poll (survey) application built using AWS Lambda an
 | GET    | `/polls/{id}/results`  | Get results of poll by ID        | No                     |
 | PUT    | `/polls/{id}/vote`     | Vote on a poll                  | Yes                    |
 | POST   | `/user/private`        | Example of protected route       | Yes                    |
+
+## Example Request Bodies
+
+**Add Poll:**
+
+```json
+{
+"pollid": 1,
+"question": "favourite color",
+"options": ["blue", "red"],
+"votes": [0, 0]
+}
+```
+
+**Vote:**
+
+```json
+{
+"optionIndex": 1
+}
+```
 
 ## Notes
 
